@@ -96,12 +96,33 @@ class Geocoder
 
     protected function formatResponse($response): array
     {
+        $address_components = $response->results[0]->address_components;
+
         return [
             'lat' => $response->results[0]->geometry->location->lat,
             'lng' => $response->results[0]->geometry->location->lng,
             'accuracy' => $response->results[0]->geometry->location_type,
-            //'formatted_address' => $response->results[0]->formatted_address,
+            'street_number' => $this->getAddressComponent($address_components, 'street_number', 'long_name'),
+            'route' => $this->getAddressComponent($address_components, 'route'),
+            'city' => $this->getAddressComponent($address_components, 'locality', 'long_name'),
+            'state' => $this->getAddressComponent($address_components, 'administrative_area_level_1'),
+            'country' => $this->getAddressComponent($address_components, 'country'),
+            'postal_code' => $this->getAddressComponent($address_components, 'postal_code'),
+            'formatted_address' => $response->results[0]->formatted_address,
         ];
+    }
+
+    protected function getAddressComponent($address_components, $key, $attribute = 'short_name')
+    {
+      foreach ($address_components as $component) {
+
+        if (in_array($key, $component->types)) {
+          return $component->$attribute;
+        }
+
+      }
+
+      return false;
     }
 
     protected function getRequestPayload(array $parameters): array
