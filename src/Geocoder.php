@@ -100,7 +100,7 @@ class Geocoder
             'lat' => $response->results[0]->geometry->location->lat,
             'lng' => $response->results[0]->geometry->location->lng,
             'accuracy' => $response->results[0]->geometry->location_type,
-            'formatted_address' => $response->results[0]->formatted_address,
+            //'formatted_address' => $response->results[0]->formatted_address,
         ];
     }
 
